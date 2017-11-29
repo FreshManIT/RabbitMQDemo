@@ -108,40 +108,41 @@ namespace RabbitMQServerClient
             {
                 using (var channel = connection.CreateModel())
                 {
-                    while (true)
-                    {
+                    //while (true)
+                    //{
                         channel.ExchangeDeclare("topic_logs", "topic");
 
-                    var queueName = channel.QueueDeclare().QueueName;
-                    //args = new[] { "#" };
-                    args = new[] { "kern.*" };
-                    //args = new[] { "*.critical" };
-                    //args = new[] { "kern.*", "*.critical" };
-                    if (args.Length < 1)
-                    {
-                        Console.Error.WriteLine("Usage: {0} [info] [warning] [error]",
-                              Environment.GetCommandLineArgs()[0]);
-                        Console.WriteLine(" Press [enter] to exit.");
-                        Console.ReadLine();
-                        Environment.ExitCode = 1;
-                        return;
-                    }
-                    foreach (var severity in args)
-                    {
-                        channel.QueueBind(queueName, "topic_logs", severity);
-                    }
-                    Console.WriteLine("Waiting for logs.");
-                    var consumer = new EventingBasicConsumer(channel);
-                    consumer.Received += (model, ea) =>
-                    {
-                        var body = ea.Body;
-                        var message = Encoding.UTF8.GetString(body);
-                        var routingKey = ea.RoutingKey;
-                        Console.WriteLine($"Received {routingKey}:{message}");
-                    };
-                    channel.BasicConsume(queueName, true, consumer);
-                    Thread.Sleep(3000);
-                    }
+                        var queueName = channel.QueueDeclare().QueueName;
+                        //args = new[] { "#" };
+                        args = new[] { "kern.*" };
+                        //args = new[] { "*.critical" };
+                        //args = new[] { "kern.*", "*.critical" };
+                        if (args.Length < 1)
+                        {
+                            Console.Error.WriteLine("Usage: {0} [info] [warning] [error]",
+                                  Environment.GetCommandLineArgs()[0]);
+                            Console.WriteLine(" Press [enter] to exit.");
+                            Console.ReadLine();
+                            Environment.ExitCode = 1;
+                            return;
+                        }
+                        foreach (var severity in args)
+                        {
+                            channel.QueueBind(queueName, "topic_logs", severity);
+                        }
+                        Console.WriteLine("Waiting for logs.");
+                        var consumer = new EventingBasicConsumer(channel);
+                        consumer.Received += (model, ea) =>
+                        {
+                            var body = ea.Body;
+                            var message = Encoding.UTF8.GetString(body);
+                            var routingKey = ea.RoutingKey;
+                            Console.WriteLine($"Received {routingKey}:{message}");
+                        };
+                        channel.BasicConsume(queueName, true, consumer);
+                    //    Thread.Sleep(3000);
+                    //}
+                    Console.ReadKey();
                 }
             }
         }

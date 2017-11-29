@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using RabbitMQ.Client;
 
 namespace RabbitMQServer
@@ -68,8 +66,6 @@ namespace RabbitMQServer
             //    }
             //}
 
-            testenum djifa = default(testenum);
-
             var factory = new ConnectionFactory { HostName = "localhost" };
             using (var connection = factory.CreateConnection())
             {
@@ -86,10 +82,5 @@ namespace RabbitMQServer
             }
             Console.ReadKey();
         }
-    }
-
-    public enum testenum
-    {
-        a=1,b=2,c=4
     }
 }
